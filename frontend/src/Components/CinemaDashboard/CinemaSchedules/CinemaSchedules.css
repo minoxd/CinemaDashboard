@@ -1,0 +1,149 @@
+/* Schedule Card Styles */
+.schedule-card {
+  background-color: #2a2a2a;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-left h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.date-picker input {
+  background-color: #2a2a2a;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #3a3a3a;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.filter-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid #3a3a3a;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.button-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Schedule Items Grid */
+.schedules-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.schedule-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+}
+
+.schedule-item-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.movie-icon {
+  width: 48px;
+  height: 48px;
+  background-color: #e50914;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.movie-info h3 {
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.movie-info p {
+  color: #999;
+  font-size: 14px;
+  margin: 0;
+}
+
+.schedule-item-right {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.time-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-icon {
+  width: 16px;
+  height: 16px;
+  color: #999;
+}
+
+.schedule-detail {
+  text-align: center;
+}
+
+.detail-label {
+  color: #999;
+  font-size: 14px;
+  margin: 0 0 4px 0;
+}
+
+.detail-value {
+  margin: 0;
+  font-weight: 500;
+}
+
+.detail-value.capacity {
+  color: #e50914;
+}
+
+.edit-button {
+  background-color: #2a2a2a;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.edit-button:hover {
+  background-color: #3a3a3a;
+}
