@@ -65,8 +65,7 @@ const CinemaManagement = () => {
           status: cinema.status === -1 ? "inactive" : "active",
           numberOfScreens: cinema.numberOfScreens || 0,
         }));
-          setCinemas(transformedData);
-
+        setCinemas(transformedData);
       } catch (error) {
         handleError(error);
       } finally {
@@ -119,7 +118,7 @@ const CinemaManagement = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/v1/admin/cinema/${editingCinema.id}`,
+        `http://10.147.17.110:8080/api/v1/admin/cinema/${editingCinema.id}`,
         {
           method: "PUT",
           headers: {
@@ -168,7 +167,7 @@ const CinemaManagement = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/api/v1/admin/cinema",
+        "http://10.147.17.110:8080/api/v1/admin/cinema",
         {
           method: "POST",
           headers: {
@@ -234,14 +233,14 @@ const CinemaManagement = () => {
       const data = response.data;
       if (data.status === "success") {
         setCinemas((prevCinemas) =>
-            prevCinemas.map((cinema) =>
-                cinema.id === cinemaId
-                    ? {
-                      ...cinema,
-                      status: data.data.status === 1 ? "active" : "inactive",
-                    }
-                    : cinema
-            )
+          prevCinemas.map((cinema) =>
+            cinema.id === cinemaId
+              ? {
+                  ...cinema,
+                  status: data.data.status === 1 ? "active" : "inactive",
+                }
+              : cinema
+          )
         );
       }
     } catch (error) {
@@ -261,7 +260,7 @@ const CinemaManagement = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/v1/admin/cinema`,
+        `http://10.147.17.110:8080/api/v1/admin/cinema`,
         {
           method: "DELETE",
           headers: {

@@ -43,8 +43,8 @@ const LoginSignUp = () => {
     try {
       const endpoint =
         type === "Đăng nhập"
-          ? "http://localhost:8080/api/v1/auth/sign-in"
-          : "http://localhost:8080/api/v1/auth/sign-up";
+          ? "http://10.147.17.110:8080/api/v1/auth/sign-in"
+          : "http://10.147.17.110:8080/api/v1/auth/sign-up";
 
       if (type === "Đăng ký") {
         const requiredFields = [

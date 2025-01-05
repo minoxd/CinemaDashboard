@@ -21,7 +21,7 @@ const PasswordReset = ({ onBackToLogin, onResetSuccess }) => {
 
     try {
       await axios.post(
-        "http://localhost:8080/api/v1/auth/reset-password/request",
+        "http://10.147.17.110:8080/api/v1/auth/reset-password/request",
         {
           email,
           type: 1,
@@ -49,7 +49,7 @@ const PasswordReset = ({ onBackToLogin, onResetSuccess }) => {
 
     try {
       await axios.post(
-        "http://localhost:8080/api/v1/auth/reset-password/finish",
+        "http://10.147.17.110:8080/api/v1/auth/reset-password/finish",
         {
           resetKey: otp,
           type: 1,
