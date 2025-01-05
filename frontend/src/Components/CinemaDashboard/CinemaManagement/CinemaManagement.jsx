@@ -4,6 +4,7 @@ import CinemaHeader from "../CinemaHeader/CinemaHeader";
 import CinemaSideBar from "../CinemaSideBar/CinemaSideBar";
 import { debounce } from "lodash";
 import "./CinemaManagement.css";
+import apiClient from "../../../api/apiClient";
 
 const CinemaManagement = () => {
   // State declarations
@@ -47,30 +48,25 @@ const CinemaManagement = () => {
     async (searchTerm) => {
       setIsLoading(true);
       try {
-        const response = await fetch(
-          `http://localhost:8080/api/v1/admin/cinema?query=${encodeURIComponent(
-            searchTerm
-          )}`
-        );
-        const data = await response.json();
-
-        if (response.ok) {
-          const transformedData = data.map((cinema) => ({
-            id: cinema.id,
-            name: cinema.name,
-            city: cinema.city,
-            address: cinema.address || "N/A",
-            lastModifiedBy: cinema.lastModifiedBy,
-            lastModifiedDate: new Date(
-              cinema.lastModifiedDate
-            ).toLocaleDateString(),
-            status: cinema.status === 0 ? "inactive" : "active",
-            numberOfScreens: cinema.numberOfScreens || 0,
-          }));
+        const response = await apiClient.get(`/admin/cinema`, {
+          params: { query: searchTerm },
+        });
+        const data = await response.data;
+        const transformedData = data.map((cinema) => ({
+          id: cinema.id,
+          name: cinema.name,
+          city: cinema.city,
+          lastModifiedBy: cinema.lastModifiedBy,
+          lastModifiedDate: new Intl.DateTimeFormat("en-GB", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).format(new Date(cinema.lastModifiedDate)),
+          status: cinema.status === -1 ? "inactive" : "active",
+          numberOfScreens: cinema.numberOfScreens || 0,
+        }));
           setCinemas(transformedData);
-        } else {
-          throw new Error(data.message || "Failed to fetch cinemas");
-        }
+
       } catch (error) {
         handleError(error);
       } finally {
@@ -234,33 +230,18 @@ const CinemaManagement = () => {
   // Handle status toggle
   const handleStatusToggle = async (cinemaId) => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/v1/admin/cinema/${cinemaId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to update status");
-      }
-
-      const data = await response.json();
-
+      const response = await apiClient.patch(`/admin/cinema/${cinemaId}`);
+      const data = response.data;
       if (data.status === "success") {
         setCinemas((prevCinemas) =>
-          prevCinemas.map((cinema) =>
-            cinema.id === cinemaId
-              ? {
-                  ...cinema,
-                  status: data.data.status === 1 ? "active" : "inactive",
-                  lastModifiedDate: new Date().toLocaleDateString(),
-                }
-              : cinema
-          )
+            prevCinemas.map((cinema) =>
+                cinema.id === cinemaId
+                    ? {
+                      ...cinema,
+                      status: data.data.status === 1 ? "active" : "inactive",
+                    }
+                    : cinema
+            )
         );
       }
     } catch (error) {
@@ -353,7 +334,7 @@ const CinemaManagement = () => {
                 <Search className="search-icon" size={20} />
                 <input
                   type="text"
-                  placeholder="Search cinemas by name, city, or address..."
+                  placeholder="Search cinemas by name"
                   value={filterValue}
                   onChange={handleSearchChange}
                 />
@@ -388,7 +369,6 @@ const CinemaManagement = () => {
                     </th>
                     <th>Name</th>
                     <th>City</th>
-                    <th>Address</th>
                     <th>Last Modified By</th>
                     <th>Last Modified Date</th>
                     <th>Status</th>
@@ -407,7 +387,6 @@ const CinemaManagement = () => {
                       </td>
                       <td>{cinema.name}</td>
                       <td>{cinema.city}</td>
-                      <td>{cinema.address}</td>
                       <td>{cinema.lastModifiedBy}</td>
                       <td>{cinema.lastModifiedDate}</td>
                       <td>
