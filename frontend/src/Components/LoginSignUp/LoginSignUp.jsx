@@ -76,8 +76,7 @@ const LoginSignUp = () => {
               ...formData,
               sex: parseInt(formData.sex),
               type: parseInt(formData.type),
-              dateOfBirth: new Date(formData.dateOfBirth)
-                .toISOString(),
+              dateOfBirth: new Date(formData.dateOfBirth).toISOString(),
             };
 
       const response = await axios.post(endpoint, payload);
