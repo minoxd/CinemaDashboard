@@ -166,18 +166,8 @@ const CinemaManagement = () => {
     setError(null);
 
     try {
-      const response = await fetch(
-        "http://10.147.17.110:8080/api/v1/admin/cinema",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newCinema),
-        }
-      );
-
-      const data = await response.json();
+      const response = await apiClient.post(`/admin/cinema`, newCinema)
+      const data = await response.data;
 
       if (!response.ok) {
         throw new Error(data.message || "Failed to add cinema");
