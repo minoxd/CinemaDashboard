@@ -27,7 +27,7 @@ const CinemaManagement = () => {
   const [newCinema, setNewCinema] = useState({
     name: "",
     cityId: 1,
-    address: ""
+    address: "",
   });
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
