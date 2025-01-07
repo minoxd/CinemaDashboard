@@ -10,6 +10,7 @@ import CinemaMovies from "./Components/CinemaDashboard/CinemaMovies/CinemaMovies
 import CinemaSchedules from "./Components/CinemaDashboard/CinemaSchedules/CinemaSchedules";
 import FoodAndDrink from "./Components/CinemaDashboard/FoodAndDrink/FoodAndDrink";
 import LoginSignUp from "./Components/LoginSignUp/LoginSignUp";
+
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 
 function App() {
