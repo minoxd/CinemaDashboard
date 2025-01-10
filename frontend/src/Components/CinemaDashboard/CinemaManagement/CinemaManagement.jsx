@@ -33,7 +33,6 @@ const CinemaManagement = () => {
     address: "",
     status: 1,
   });
-
   const [newCinema, setNewCinema] = useState({
     name: "",
     cityId: 1,
@@ -316,10 +315,10 @@ const CinemaManagement = () => {
   );
 
   return (
-    <div className="cinema-management-container">
-      <CinemaHeader />
-      <div className="dashboard-content">
-        <CinemaSideBar />
+  <div className="cinema-management-container">
+    <CinemaHeader/>
+    <div className="dashboard-content">
+    <CinemaSideBar />
         <div className="main-content">
           <div className="cinema-management">
             {error && <div className="error-message">{error}</div>}
@@ -331,18 +330,18 @@ const CinemaManagement = () => {
               </div>
               <div className="header-actions">
                 <button
-                  className="deactivate-button"
-                  disabled={selectedCinemas.length === 0}
-                  onClick={handleDeactivateSelected}
+                    className="deactivate-button"
+                    disabled={selectedCinemas.length === 0}
+                    onClick={handleDeactivateSelected}
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={16}/>
                   <span>Deactivate Selected</span>
                 </button>
                 <button
-                  className="add-button"
-                  onClick={() => setShowAddForm(true)}
+                    className="add-button"
+                    onClick={() => setShowAddForm(true)}
                 >
-                  <Plus size={16} />
+                  <Plus size={16}/>
                   <span>Add New Cinema</span>
                 </button>
               </div>
@@ -350,21 +349,21 @@ const CinemaManagement = () => {
 
             <div className="filters">
               <div className="search-box">
-                <Search className="search-icon" size={20} />
+                <Search className="search-icon" size={20}/>
                 <input
-                  type="text"
-                  placeholder="Search cinemas by name"
-                  value={filterValue}
-                  onChange={handleSearchChange}
+                    type="text"
+                    placeholder="Search cinemas by name"
+                    value={filterValue}
+                    onChange={handleSearchChange}
                 />
                 {isLoading && (
-                  <span className="loading-indicator">Searching...</span>
+                    <span className="loading-indicator">Searching...</span>
                 )}
               </div>
               <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="status-filter"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="status-filter"
               >
                 <option value="all">All Status</option>
                 <option value="active">Active</option>
@@ -375,33 +374,33 @@ const CinemaManagement = () => {
             <div className="cinemas-table">
               <table>
                 <thead>
-                  <tr>
-                    <th>
-                      <input
+                <tr>
+                  <th>
+                    <input
                         type="checkbox"
                         onChange={handleSelectAll}
                         checked={
-                          selectedCinemas.length === filteredCinemas.length &&
-                          filteredCinemas.length > 0
+                            selectedCinemas.length === filteredCinemas.length &&
+                            filteredCinemas.length > 0
                         }
-                      />
-                    </th>
-                    <th>Name</th>
-                    <th>City</th>
-                    <th>Last Modified By</th>
-                    <th>Last Modified Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
+                    />
+                  </th>
+                  <th>Name</th>
+                  <th>City</th>
+                  <th>Last Modified By</th>
+                  <th>Last Modified Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
                 </thead>
                 <tbody>
-                  {filteredCinemas.map((cinema) => (
+                {filteredCinemas.map((cinema) => (
                     <tr key={cinema.id}>
                       <td>
                         <input
-                          type="checkbox"
-                          checked={selectedCinemas.includes(cinema.id)}
-                          onChange={() => handleSelectCinema(cinema.id)}
+                            type="checkbox"
+                            checked={selectedCinemas.includes(cinema.id)}
+                            onChange={() => handleSelectCinema(cinema.id)}
                         />
                       </td>
                       <td>{cinema.name}</td>
@@ -415,272 +414,272 @@ const CinemaManagement = () => {
                       </td>
                       <td className="actions">
                         <button
-                          className="action-button"
-                          onClick={() => handleStatusToggle(cinema.id)}
-                          title={`Click to ${
-                            cinema.status === "active"
-                              ? "deactivate"
-                              : "activate"
-                          }`}
+                            className="action-button"
+                            onClick={() => handleStatusToggle(cinema.id)}
+                            title={`Click to ${
+                                cinema.status === "active"
+                                    ? "deactivate"
+                                    : "activate"
+                            }`}
                         >
                           {cinema.status === "active" ? (
-                            <ToggleLeft
-                              size={16}
-                              style={{ color: "#2ecc71" }}
-                            />
+                              <ToggleLeft
+                                  size={16}
+                                  style={{color: "#2ecc71"}}
+                              />
                           ) : (
-                            <ToggleLeft
-                              size={16}
-                              style={{ color: "#e50914" }}
-                            />
+                              <ToggleLeft
+                                  size={16}
+                                  style={{color: "#e50914"}}
+                              />
                           )}
                         </button>
                         <button
-                          className="action-button"
-                          onClick={() => handleEditClick(cinema)}
+                            className="action-button"
+                            onClick={() => handleEditClick(cinema)}
                         >
-                          <Edit size={16} />
+                          <Edit size={16}/>
                         </button>
                         <button
-                          className="action-button"
-                          onClick={() => handleViewScreens(cinema.id)}
+                            className="action-button"
+                            onClick={() => handleViewScreens(cinema.id)}
                         >
-                          <Monitor size={16} />
+                          <Monitor size={16}/>
                         </button>
                       </td>
                     </tr>
-                  ))}
+                ))}
                 </tbody>
               </table>
             </div>
 
             {/* Add Cinema Modal */}
             {showAddForm && (
-              <div className="modal-overlay">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h2>Add New Cinema</h2>
-                    <button
-                      className="close-button"
-                      onClick={() => setShowAddForm(false)}
-                    >
-                      <X size={20} />
-                    </button>
+                <div className="modal-overlay">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h2>Add New Cinema</h2>
+                      <button
+                          className="close-button"
+                          onClick={() => setShowAddForm(false)}
+                      >
+                        <X size={20}/>
+                      </button>
+                    </div>
+                    <form onSubmit={handleAddCinema}>
+                      <div className="form-group">
+                        <label>Cinema Name</label>
+                        <input
+                            type="text"
+                            required
+                            value={newCinema.name}
+                            onChange={(e) =>
+                                setNewCinema({...newCinema, name: e.target.value})
+                            }
+                            placeholder="Enter cinema name"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>City</label>
+                        <select
+                            value={newCinema.cityId}
+                            onChange={(e) =>
+                                setNewCinema({
+                                  ...newCinema,
+                                  cityId: parseInt(e.target.value),
+                                })
+                            }
+                        >
+                          {cities.map((city) => (
+                              <option key={city.id} value={city.id}>
+                                {city.name}
+                              </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>Address</label>
+                        <input
+                            type="text"
+                            required
+                            value={newCinema.address}
+                            onChange={(e) =>
+                                setNewCinema({
+                                  ...newCinema,
+                                  address: e.target.value,
+                                })
+                            }
+                            placeholder="Enter cinema address"
+                        />
+                      </div>
+                      <div className="modal-actions">
+                        <button
+                            type="button"
+                            className="cancel-button"
+                            onClick={() => setShowAddForm(false)}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="submit-button"
+                            disabled={isLoading}
+                        >
+                          {isLoading ? "Adding..." : "Add Cinema"}
+                        </button>
+                      </div>
+                    </form>
                   </div>
-                  <form onSubmit={handleAddCinema}>
-                    <div className="form-group">
-                      <label>Cinema Name</label>
-                      <input
-                        type="text"
-                        required
-                        value={newCinema.name}
-                        onChange={(e) =>
-                          setNewCinema({ ...newCinema, name: e.target.value })
-                        }
-                        placeholder="Enter cinema name"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>City</label>
-                      <select
-                        value={newCinema.cityId}
-                        onChange={(e) =>
-                          setNewCinema({
-                            ...newCinema,
-                            cityId: parseInt(e.target.value),
-                          })
-                        }
-                      >
-                        {cities.map((city) => (
-                          <option key={city.id} value={city.id}>
-                            {city.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="form-group">
-                      <label>Address</label>
-                      <input
-                        type="text"
-                        required
-                        value={newCinema.address}
-                        onChange={(e) =>
-                          setNewCinema({
-                            ...newCinema,
-                            address: e.target.value,
-                          })
-                        }
-                        placeholder="Enter cinema address"
-                      />
-                    </div>
-                    <div className="modal-actions">
-                      <button
-                        type="button"
-                        className="cancel-button"
-                        onClick={() => setShowAddForm(false)}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="submit-button"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? "Adding..." : "Add Cinema"}
-                      </button>
-                    </div>
-                  </form>
                 </div>
-              </div>
             )}
 
             {/* Edit Cinema Modal */}
             {showEditForm && editingCinema && (
-              <div className="modal-overlay">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h2>Edit Cinema</h2>
-                    <button
-                      className="close-button"
-                      onClick={() => {
-                        setShowEditForm(false);
-                        setEditingCinema(null);
-                      }}
-                    >
-                      <X size={20} />
-                    </button>
+                <div className="modal-overlay">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h2>Edit Cinema</h2>
+                      <button
+                          className="close-button"
+                          onClick={() => {
+                            setShowEditForm(false);
+                            setEditingCinema(null);
+                          }}
+                      >
+                        <X size={20}/>
+                      </button>
+                    </div>
+                    <form onSubmit={handleEditSubmit}>
+                      <div className="form-group">
+                        <label>Cinema Name</label>
+                        <input
+                            type="text"
+                            required
+                            value={editFormData.name}
+                            onChange={(e) =>
+                                setEditFormData({
+                                  ...editFormData,
+                                  name: e.target.value,
+                                })
+                            }
+                            placeholder="Enter cinema name"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>City</label>
+                        <select
+                            value={editFormData.cityId}
+                            onChange={(e) =>
+                                setEditFormData({
+                                  ...editFormData,
+                                  cityId: parseInt(e.target.value),
+                                })
+                            }
+                        >
+                          {cities.map((city) => (
+                              <option key={city.id} value={city.id}>
+                                {city.name}
+                              </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>Address</label>
+                        <input
+                            type="text"
+                            required
+                            value={editFormData.address}
+                            onChange={(e) =>
+                                setEditFormData({
+                                  ...editFormData,
+                                  address: e.target.value,
+                                })
+                            }
+                            placeholder="Enter cinema address"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Status</label>
+                        <select
+                            value={editFormData.status}
+                            onChange={(e) =>
+                                setEditFormData({
+                                  ...editFormData,
+                                  status: parseInt(e.target.value),
+                                })
+                            }
+                        >
+                          <option value={1}>Active</option>
+                          <option value={0}>Inactive</option>
+                        </select>
+                      </div>
+                      <div className="modal-actions">
+                        <button
+                            type="button"
+                            className="cancel-button"
+                            onClick={() => {
+                              setShowEditForm(false);
+                              setEditingCinema(null);
+                            }}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="submit-button"
+                            disabled={isLoading}
+                        >
+                          {isLoading ? "Updating..." : "Update Cinema"}
+                        </button>
+                      </div>
+                    </form>
                   </div>
-                  <form onSubmit={handleEditSubmit}>
-                    <div className="form-group">
-                      <label>Cinema Name</label>
-                      <input
-                        type="text"
-                        required
-                        value={editFormData.name}
-                        onChange={(e) =>
-                          setEditFormData({
-                            ...editFormData,
-                            name: e.target.value,
-                          })
-                        }
-                        placeholder="Enter cinema name"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>City</label>
-                      <select
-                        value={editFormData.cityId}
-                        onChange={(e) =>
-                          setEditFormData({
-                            ...editFormData,
-                            cityId: parseInt(e.target.value),
-                          })
-                        }
+                </div>
+            )}
+            {/* Delete Confirmation Modal */}
+            {showDeleteConfirmation && (
+                <div className="modal-overlay">
+                  <div className="modal-content confirmation-modal">
+                    <div className="modal-header">
+                      <h2>Confirm Delete</h2>
+                      <button
+                          className="close-button"
+                          onClick={() => setShowDeleteConfirmation(false)}
                       >
-                        {cities.map((city) => (
-                          <option key={city.id} value={city.id}>
-                            {city.name}
-                          </option>
-                        ))}
-                      </select>
+                        <X size={20}/>
+                      </button>
                     </div>
-                    <div className="form-group">
-                      <label>Address</label>
-                      <input
-                        type="text"
-                        required
-                        value={editFormData.address}
-                        onChange={(e) =>
-                          setEditFormData({
-                            ...editFormData,
-                            address: e.target.value,
-                          })
-                        }
-                        placeholder="Enter cinema address"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Status</label>
-                      <select
-                        value={editFormData.status}
-                        onChange={(e) =>
-                          setEditFormData({
-                            ...editFormData,
-                            status: parseInt(e.target.value),
-                          })
-                        }
-                      >
-                        <option value={1}>Active</option>
-                        <option value={0}>Inactive</option>
-                      </select>
+                    <div className="confirmation-content">
+                      <p>
+                        Are you sure you want to delete{" "}
+                        {selectedCinemas.length === 1
+                            ? "this cinema"
+                            : `these ${selectedCinemas.length} cinemas`}
+                        ?
+                      </p>
+                      <p className="warning-text">
+                        This action cannot be undone.
+                      </p>
                     </div>
                     <div className="modal-actions">
                       <button
-                        type="button"
-                        className="cancel-button"
-                        onClick={() => {
-                          setShowEditForm(false);
-                          setEditingCinema(null);
-                        }}
+                          type="button"
+                          className="cancel-button"
+                          onClick={() => setShowDeleteConfirmation(false)}
                       >
                         Cancel
                       </button>
                       <button
-                        type="submit"
-                        className="submit-button"
-                        disabled={isLoading}
+                          type="button"
+                          className="delete-button"
+                          onClick={confirmDelete}
+                          disabled={isLoading}
                       >
-                        {isLoading ? "Updating..." : "Update Cinema"}
+                        {isLoading ? "Deleting..." : "Delete"}
                       </button>
                     </div>
-                  </form>
-                </div>
-              </div>
-            )}
-            {/* Delete Confirmation Modal */}
-            {showDeleteConfirmation && (
-              <div className="modal-overlay">
-                <div className="modal-content confirmation-modal">
-                  <div className="modal-header">
-                    <h2>Confirm Delete</h2>
-                    <button
-                      className="close-button"
-                      onClick={() => setShowDeleteConfirmation(false)}
-                    >
-                      <X size={20} />
-                    </button>
-                  </div>
-                  <div className="confirmation-content">
-                    <p>
-                      Are you sure you want to delete{" "}
-                      {selectedCinemas.length === 1
-                        ? "this cinema"
-                        : `these ${selectedCinemas.length} cinemas`}
-                      ?
-                    </p>
-                    <p className="warning-text">
-                      This action cannot be undone.
-                    </p>
-                  </div>
-                  <div className="modal-actions">
-                    <button
-                      type="button"
-                      className="cancel-button"
-                      onClick={() => setShowDeleteConfirmation(false)}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      className="delete-button"
-                      onClick={confirmDelete}
-                      disabled={isLoading}
-                    >
-                      {isLoading ? "Deleting..." : "Delete"}
-                    </button>
                   </div>
                 </div>
-              </div>
             )}
           </div>
         </div>

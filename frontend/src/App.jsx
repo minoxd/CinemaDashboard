@@ -13,15 +13,18 @@ import LoginSignUp from "./Components/LoginSignUp/LoginSignUp";
 import CinemaScreens from "./Components/CinemaDashboard/CinemaScreens/CinemaScreens";
 import CinemaSeats from "./Components/CinemaDashboard/CinemaSeats/CinemaSeats";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
+import React from "react";
+import LmaoTest from "./Components/CinemaDashboard/CinemaMovies/test";
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Routes */}
-        <Route path="/login" element={<LoginSignUp />} />
+          <Route path="/abc" element={<LmaoTest />}/>
+          {/* Public Routes */}
+          <Route path="/login" element={<LoginSignUp/>}/>
 
-        {/* Protected Routes */}
+          {/* Protected Routes */}
         <Route
           path="/"
           element={
