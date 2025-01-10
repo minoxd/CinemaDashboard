@@ -10,7 +10,8 @@ import CinemaMovies from "./Components/CinemaDashboard/CinemaMovies/CinemaMovies
 import CinemaSchedules from "./Components/CinemaDashboard/CinemaSchedules/CinemaSchedules";
 import FoodAndDrink from "./Components/CinemaDashboard/FoodAndDrink/FoodAndDrink";
 import LoginSignUp from "./Components/LoginSignUp/LoginSignUp";
-
+import CinemaScreens from "./Components/CinemaDashboard/CinemaScreens/CinemaScreens";
+import CinemaSeats from "./Components/CinemaDashboard/CinemaSeats/CinemaSeats";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 
 function App() {
@@ -66,6 +67,22 @@ function App() {
           element={
             <ProtectedRoute>
               <FoodAndDrink />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cinema/:cinemaId/screens"
+          element={
+            <ProtectedRoute>
+              <CinemaScreens />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cinema/:screenId/seats"
+          element={
+            <ProtectedRoute>
+              <CinemaSeats />
             </ProtectedRoute>
           }
         />

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "./LoginSignUp.css";
 import { Mail, Lock, User, Phone, MapPin, Calendar } from "lucide-react";
 import PasswordReset from "../PasswordReset/PasswordReset";
+import apiClient from "../../api/apiClient";
 
 const LoginSignUp = () => {
   const navigate = useNavigate();
-  const [action, setAction] = useState("Đăng nhập"); // Changed default to Sign In
+  const [action, setAction] = useState("Đăng nhập");
   const [showPasswordReset, setShowPasswordReset] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -21,8 +21,8 @@ const LoginSignUp = () => {
     type: 1,
   });
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Check if user is already logged in
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -39,70 +39,29 @@ const LoginSignUp = () => {
   };
 
   const handleSubmit = async (type) => {
-    setError("");
-    try {
-      const endpoint =
-        type === "Đăng nhập"
-          ? "http://10.147.17.110:8080/api/v1/auth/sign-in"
-          : "http://10.147.17.110:8080/api/v1/auth/sign-up";
+    if (type === "Đăng nhập") {
+      setIsLoading(true);
+      setError("");
 
-      if (type === "Đăng ký") {
-        const requiredFields = [
-          "firstName",
-          "lastName",
-          "phone",
-          "dateOfBirth",
-          "sex",
-          "address",
-          "email",
-          "password",
-        ];
-        const missingFields = requiredFields.filter(
-          (field) => !formData[field]
-        );
-        if (missingFields.length > 0) {
-          setError("Vui lòng điền đầy đủ thông tin");
-          return;
-        }
-      }
-
-      const payload =
-        type === "Đăng nhập"
-          ? {
-              email: formData.email,
-              password: formData.password,
-            }
-          : {
-              ...formData,
-              sex: parseInt(formData.sex),
-              type: parseInt(formData.type),
-              dateOfBirth: new Date(formData.dateOfBirth).toISOString(),
-            };
-
-      const response = await axios.post(endpoint, payload);
-
-      if (type === "Đăng ký") {
-        // After successful signup, switch to sign in
-        setAction("Đăng nhập");
-        setFormData({
-          ...formData,
-          password: "", // Clear password for security
+      try {
+        const response = await apiClient.post("/auth/sign-in", {
+          email: formData.email,
+          password: formData.password,
         });
-        setError(""); // Clear any errors
-        return; // Don't proceed with token storage
-      }
 
-      if (response.data.accessToken) {
-        localStorage.setItem("token", response.data.accessToken);
-        localStorage.setItem("userId", response.data.userId);
-        navigate("/home");
+        if (response.data.accessToken) {
+          localStorage.setItem("token", response.data.accessToken);
+          localStorage.setItem("userId", response.data.userId);
+          navigate("/home");
+        }
+      } catch (err) {
+        console.error("Login error:", err);
+        setError(err.response?.data?.message || "Invalid email or password");
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      setError(
-        err.response?.data?.description ||
-          err.response?.data?.message ||
-          "Đã xảy ra lỗi"
-      );
     }
   };
 
@@ -141,7 +100,21 @@ const LoginSignUp = () => {
           </div>
 
           {error && (
-            <div style={{ color: "red", textAlign: "center" }}>{error}</div>
+            <div
+              style={{
+                color: "red",
+                textAlign: "center",
+                marginBottom: "10px",
+              }}
+            >
+              {error}
+            </div>
+          )}
+
+          {isLoading && (
+            <div style={{ textAlign: "center", marginBottom: "10px" }}>
+              Logging in...
+            </div>
           )}
 
           <div className="inputs">
@@ -244,7 +217,11 @@ const LoginSignUp = () => {
           )}
 
           <div className="submit-container">
-            <div className="submit" onClick={() => handleSubmit(action)}>
+            <div
+              className="submit"
+              onClick={() => handleSubmit(action)}
+              style={{ cursor: isLoading ? "not-allowed" : "pointer" }}
+            >
               {action === "Đăng ký" ? "Đăng ký" : "Đăng nhập"}
             </div>
           </div>

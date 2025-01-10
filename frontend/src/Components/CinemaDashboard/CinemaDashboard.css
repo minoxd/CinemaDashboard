@@ -153,6 +153,8 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 5px;
 }
 
 .stat-label {
@@ -171,6 +173,7 @@
   height: 48px;
   background-color: #e50914;
   border-radius: 8px;
+  margin-left: 25px;
   display: flex;
   align-items: center;
   justify-content: center;

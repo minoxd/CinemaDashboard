@@ -1,12 +1,22 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Edit, Plus, Search, ToggleLeft, Trash2, X } from "lucide-react";
+import {
+  Edit,
+  Plus,
+  Search,
+  ToggleLeft,
+  Trash2,
+  Monitor,
+  X,
+} from "lucide-react";
 import CinemaHeader from "../CinemaHeader/CinemaHeader";
 import CinemaSideBar from "../CinemaSideBar/CinemaSideBar";
+import { useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
 import "./CinemaManagement.css";
 import apiClient from "../../../api/apiClient";
 
 const CinemaManagement = () => {
+  const navigate = useNavigate();
   // State declarations
   const [cinemas, setCinemas] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -37,6 +47,11 @@ const CinemaManagement = () => {
     { id: 3, name: "Da Nang" },
   ];
 
+  // Function to handle view screens
+  const handleViewScreens = (cinemaId) => {
+    navigate(`/cinema/${cinemaId}/screens`);
+  };
+
   // Error handler function
   const handleError = useCallback((error) => {
     console.error("Error:", error);
@@ -49,22 +64,27 @@ const CinemaManagement = () => {
       setIsLoading(true);
       try {
         const response = await apiClient.get(`/admin/cinema`, {
-          params: { query: searchTerm },
+          params: searchTerm ? { query: searchTerm } : {},
         });
-        const data = await response.data;
+
+        const data = response.data;
+
+        // Transform data from the backend into UI state
         const transformedData = data.map((cinema) => ({
           id: cinema.id,
           name: cinema.name,
           city: cinema.city,
+          address: cinema.address,
           lastModifiedBy: cinema.lastModifiedBy,
           lastModifiedDate: new Intl.DateTimeFormat("en-GB", {
             year: "numeric",
             month: "2-digit",
             day: "2-digit",
           }).format(new Date(cinema.lastModifiedDate)),
-          status: cinema.status === -1 ? "inactive" : "active",
+          status: cinema.status === 1 ? "active" : "inactive",
           numberOfScreens: cinema.numberOfScreens || 0,
         }));
+
         setCinemas(transformedData);
       } catch (error) {
         handleError(error);
@@ -103,7 +123,7 @@ const CinemaManagement = () => {
     setEditingCinema(cinema);
     setEditFormData({
       name: cinema.name,
-      cityId: cities.find((city) => city.name === cinema.city)?.id || 1,
+      cityId: cities.find((city) => city.name === cinema.city)?.id || 1, // Map city name to cityId
       address: cinema.address,
       status: cinema.status === "active" ? 1 : 0,
     });
@@ -117,38 +137,42 @@ const CinemaManagement = () => {
     setError(null);
 
     try {
-      const response = await fetch(
-        `http://10.147.17.110:8080/api/v1/admin/cinema/${editingCinema.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(editFormData),
-        }
+      const payload = {
+        cityId: editFormData.cityId, // Updated cityId
+        name: editFormData.name,
+        address: editFormData.address,
+        status: editFormData.status,
+      };
+
+      const response = await apiClient.put(
+        `/admin/cinema/${editingCinema.id}`,
+        payload
       );
 
-      const data = await response.json();
-
-      if (!response.ok) {
+      const data = response.data; // Check response status
+      if (data.status !== "success") {
         throw new Error(data.message || "Failed to update cinema");
       }
 
-      setCinemas((prevCinemas) =>
-        prevCinemas.map((cinema) =>
-          cinema.id === editingCinema.id
-            ? {
-                ...cinema,
-                name: editFormData.name,
-                city: cities.find((city) => city.id === editFormData.cityId)
-                  ?.name,
-                address: editFormData.address,
-                status: editFormData.status === 1 ? "active" : "inactive",
-                lastModifiedDate: new Date().toLocaleDateString(),
-              }
-            : cinema
-        )
-      );
+      // Update local state to reflect changes
+
+      // setCinemas((prevCinemas) =>
+      //   prevCinemas.map((cinema) =>
+      //     cinema.id === editingCinema.id
+      //       ? {
+      //           ...cinema,
+      //           name: editFormData.name,
+      //           city:
+      //             cities.find((city) => city.id === editFormData.cityId)
+      //               ?.name || "Unknown",
+      //           address: editFormData.address,
+      //           status: editFormData.status === 1 ? "active" : "inactive",
+      //         }
+      //       : cinema
+      //   )
+      // );
+
+      await searchCinemas(filterValue);
 
       setShowEditForm(false);
       setEditingCinema(null);
@@ -166,7 +190,7 @@ const CinemaManagement = () => {
     setError(null);
 
     try {
-      const response = await apiClient.post(`/admin/cinema`, newCinema)
+      const response = await apiClient.post(`/admin/cinema`, newCinema);
       const data = await response.data;
 
       if (!response.ok) {
@@ -219,20 +243,38 @@ const CinemaManagement = () => {
   // Handle status toggle
   const handleStatusToggle = async (cinemaId) => {
     try {
-      const response = await apiClient.patch(`/admin/cinema/${cinemaId}`);
-      const data = response.data;
-      if (data.status === "success") {
-        setCinemas((prevCinemas) =>
-          prevCinemas.map((cinema) =>
-            cinema.id === cinemaId
-              ? {
-                  ...cinema,
-                  status: data.data.status === 1 ? "active" : "inactive",
-                }
-              : cinema
-          )
-        );
+      const selectedCinema = cinemas.find((cinema) => cinema.id === cinemaId);
+
+      if (!selectedCinema) {
+        throw new Error("Cinema not found");
       }
+
+      // Determine new status based on current string representation
+      const newStatus = selectedCinema.status === "active" ? 0 : 1;
+
+      // Send the update request
+      const response = await apiClient.put(`/admin/cinema/${cinemaId}`, {
+        cityId: selectedCinema.cityId,
+        name: selectedCinema.name,
+        address: selectedCinema.address,
+        status: newStatus,
+      });
+
+      if (response.data.status !== "success") {
+        throw new Error(response.data.message || "Failed to update status");
+      }
+
+      // Update UI state
+      setCinemas((prevCinemas) =>
+        prevCinemas.map((cinema) =>
+          cinema.id === cinemaId
+            ? {
+                ...cinema,
+                status: newStatus === 1 ? "active" : "inactive",
+              }
+            : cinema
+        )
+      );
     } catch (error) {
       handleError(error);
     }
@@ -240,8 +282,10 @@ const CinemaManagement = () => {
 
   // Handle deactivate selected cinemas
   // Updated delete function
-  const handleDeactivateSelected = async () => {
-    setShowDeleteConfirmation(true);
+  const handleDeactivateSelected = () => {
+    if (selectedCinemas.length > 0) {
+      setShowDeleteConfirmation(true);
+    }
   };
 
   const confirmDelete = async () => {
@@ -249,28 +293,14 @@ const CinemaManagement = () => {
     setError(null);
 
     try {
-      const response = await fetch(
-        `http://10.147.17.110:8080/api/v1/admin/cinema`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ cinemaIds: selectedCinemas }), // Wrap the IDs in an object
-        }
-      );
+      await apiClient.delete("/admin/cinema", {
+        data: selectedCinemas, // Send array of IDs to be deleted
+      });
 
-      const data = await response.json();
+      // After successful deletion, refresh the cinema list
+      await searchCinemas(filterValue);
 
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to delete cinemas");
-      }
-
-      // Remove deleted cinemas from the state
-      setCinemas((prevCinemas) =>
-        prevCinemas.filter((cinema) => !selectedCinemas.includes(cinema.id))
-      );
-
+      // Clear selections and close modal
       setSelectedCinemas([]);
       setShowDeleteConfirmation(false);
     } catch (error) {
@@ -410,6 +440,12 @@ const CinemaManagement = () => {
                           onClick={() => handleEditClick(cinema)}
                         >
                           <Edit size={16} />
+                        </button>
+                        <button
+                          className="action-button"
+                          onClick={() => handleViewScreens(cinema.id)}
+                        >
+                          <Monitor size={16} />
                         </button>
                       </td>
                     </tr>
@@ -616,7 +652,11 @@ const CinemaManagement = () => {
                   </div>
                   <div className="confirmation-content">
                     <p>
-                      Are you sure you want to delete the selected cinema(s)?
+                      Are you sure you want to delete{" "}
+                      {selectedCinemas.length === 1
+                        ? "this cinema"
+                        : `these ${selectedCinemas.length} cinemas`}
+                      ?
                     </p>
                     <p className="warning-text">
                       This action cannot be undone.
